@@ -34,20 +34,22 @@ public class Main {
                     while (matcher.find()) {
                         var name = matcher.group(2);
                         classes.put(name, classes.getOrDefault(name, new ArrayList<>()));
+                        parentEntity op = (parent) -> {
+                            if (parent != null) {
+                                classes.put(parent, classes.getOrDefault(parent, new ArrayList<>()));
+                                var parentHeirs = classes.getOrDefault(parent, new ArrayList<>());
+                                parentHeirs.add(name);
+                            }
+                        };
                         var parentClass = matcher.group(5);
-                        if (parentClass != null) {
-                            classes.put(parentClass, classes.getOrDefault(parentClass, new ArrayList<>()));
-                            var parentHeirs = classes.getOrDefault(parentClass, new ArrayList<>());
-                            parentHeirs.add(name);
-                        }
                         var parentInterface = matcher.group(7);
-                        if (parentInterface != null) {
-                            classes.put(parentInterface, classes.getOrDefault(parentInterface, new ArrayList<>()));
-                            var parentHeirs = classes.getOrDefault(parentInterface, new ArrayList<>());
-                            parentHeirs.add(name);
-                        }
+                        op.addHeirs(parentClass);
+                        op.addHeirs(parentInterface);
                     }
                 });
         System.out.println(classes);
+    }
+    interface parentEntity {
+        void addHeirs(String parent);
     }
 }
