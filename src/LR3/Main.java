@@ -1,4 +1,4 @@
-package LR2;
+package LR3;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,8 +37,7 @@ public class Main {
                 action.addChildren(name, parentInterface);
             }
         });
-
-        System.out.println(entities);
+            System.out.println(entities);
     }
 
     public static ArrayList<String> ReadSourceFiles(String path) throws IOException {
@@ -66,4 +65,3 @@ public class Main {
         void addChildren(String entity, String parent);
     }
 }
-
