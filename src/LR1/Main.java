@@ -8,7 +8,7 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) {
         try {
-            Scanner scanner = new Scanner(new File("LR1_input.txt"));
+            Scanner scanner = new Scanner(new File("src/LR1/input.txt"));
             Map<String, Integer> words = new HashMap<>();
             scanner.useDelimiter("\\W+");
             while (scanner.hasNext())
