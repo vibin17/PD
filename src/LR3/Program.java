@@ -1,4 +1,4 @@
-package LR2;
+package LR3;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -18,10 +19,12 @@ public class Program {
         Map<String, ArrayList<String>> classesInProject = new HashMap<>();
         Pattern pattern = Pattern.compile("(class +[A-Za-z]\\w* *(<\\w+>)? * |interface +[A-Za-z]\\w*)" + "((extends) +([A-Za-z]\\w*))? *(implements +([A-Za-z]\\w*))?", Pattern.MULTILINE);
         Stream<Path> paths = Files.walk(Paths.get("src/LR2/data"));
+        Stream<Path> pathss = Files.walk(Paths.get("src/LR2/data"));
+        CountDownLatch cdl = new CountDownLatch((int) pathss.filter(Files::isRegularFile).map(Path::toString).filter(f -> f.endsWith(".java")).count());
         paths.filter(Files::isRegularFile)
                 .map(Path::toString)
                 .filter(f -> f.endsWith(".java"))
-                .forEach(f -> {
+                .forEach(f -> new Thread(() -> {
                     try (Scanner in = new Scanner(new File(f))) {
                         String data = in.useDelimiter("\\A").next();
                         Matcher matcher = pattern.matcher(data);
@@ -44,7 +47,13 @@ public class Program {
                     catch (Exception e) {
                         e.printStackTrace();
                     }
-                });
+                    cdl.countDown();
+                }).start());
+        try {
+            cdl.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         classesInProject.forEach((key, value) -> {
             System.out.println(key + ": " + value);
         });
