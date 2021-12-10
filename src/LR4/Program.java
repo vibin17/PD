@@ -1,4 +1,4 @@
-package LR3;
+package LR4;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,18 +31,20 @@ public class Program {
                         String data = in.useDelimiter("\\A").next();
                         Matcher matcher = pattern.matcher(data);
                         while (matcher.find()){
-                            if (!classesInProject.containsKey(matcher.group(1))){
-                                classesInProject.put(matcher.group(1),new ArrayList<>());
-                            }
-                            if (matcher.group(4) != null){
-                                var array = classesInProject.getOrDefault("class" + " " + matcher.group(5) + " ", new ArrayList<>());
-                                array.add(matcher.group(1).trim());
-                                classesInProject.put("class" + " " + matcher.group(5) + " ", array);
-                            }
-                            if (matcher.group(6) != null){
-                                var array = classesInProject.getOrDefault("interface" + " " + matcher.group(7) + " ", new ArrayList<>());
-                                array.add(matcher.group(1).trim());
-                                classesInProject.put("interface" + " " + matcher.group(7), array);
+                            synchronized (classesInProject) {
+                                if (!classesInProject.containsKey(matcher.group(1))){
+                                    classesInProject.put(matcher.group(1),new ArrayList<>());
+                                }
+                                if (matcher.group(4) != null){
+                                    var array = classesInProject.getOrDefault("class" + " " + matcher.group(5) + " ", new ArrayList<>());
+                                    array.add(matcher.group(1).trim());
+                                    classesInProject.put("class" + " " + matcher.group(5) + " ", array);
+                                }
+                                if (matcher.group(6) != null){
+                                    var array = classesInProject.getOrDefault("interface" + " " + matcher.group(7) + " ", new ArrayList<>());
+                                    array.add(matcher.group(1).trim());
+                                    classesInProject.put("interface" + " " + matcher.group(7), array);
+                                }
                             }
                         }
                     }
@@ -60,7 +62,6 @@ public class Program {
             System.out.println(key + ": " + value);
             childCurrent.addAndGet(value.size());
         });
-
         System.out.println("Child current: " + childCurrent);
     }
 }
