@@ -1,4 +1,4 @@
-package LR3;
+package LR5;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -20,7 +19,7 @@ public class Main {
         Map<String, ArrayList<String>> entities = new HashMap<>();
         Pattern pattern = Pattern.compile("(class|interface) +([A-Za-z]\\w*) *(<\\w+>)? *" +
                 "(extends +([A-Za-z]\\w*))? *(implements +([A-Za-z]\\w*))?", Pattern.MULTILINE);
-        ArrayList<String> data = ReadSourceFiles("../spring-framework-main");
+        ArrayList<String> data = ReadSourceFiles("src/LR2/input");
         Parent action = (entity, parent) -> {
             if (parent != null) {
                 entities.put(parent, entities.getOrDefault(parent, new ArrayList<>()));
@@ -35,9 +34,11 @@ public class Main {
                 var name = matcher.group(2);
                 var parentClass = matcher.group(5);
                 var parentInterface = matcher.group(7);
-                entities.put(name, entities.getOrDefault(name, new ArrayList<>()));
-                action.addChildren(name, parentClass);
-                action.addChildren(name, parentInterface);
+                synchronized (entities) {
+                    entities.put(name, entities.getOrDefault(name, new ArrayList<>()));
+                    action.addChildren(name, parentClass);
+                    action.addChildren(name, parentInterface);
+                }
             }
             cdl.countDown();
         }).start());
@@ -46,13 +47,7 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(entities);
-        AtomicInteger children = new AtomicInteger();
-        entities.forEach((e, ch) -> {
-            children.addAndGet(ch.size());
-        });
-        System.out.println(entities);
-        System.out.println(children);
+            System.out.println(entities);
     }
 
     public static ArrayList<String> ReadSourceFiles(String path) throws IOException {

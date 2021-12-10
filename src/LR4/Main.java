@@ -1,4 +1,4 @@
-package LR3;
+package LR4;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,9 +35,11 @@ public class Main {
                 var name = matcher.group(2);
                 var parentClass = matcher.group(5);
                 var parentInterface = matcher.group(7);
-                entities.put(name, entities.getOrDefault(name, new ArrayList<>()));
-                action.addChildren(name, parentClass);
-                action.addChildren(name, parentInterface);
+                synchronized (entities) {
+                    entities.put(name, entities.getOrDefault(name, new ArrayList<>()));
+                    action.addChildren(name, parentClass);
+                    action.addChildren(name, parentInterface);
+                }
             }
             cdl.countDown();
         }).start());
@@ -46,7 +48,6 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(entities);
         AtomicInteger children = new AtomicInteger();
         entities.forEach((e, ch) -> {
             children.addAndGet(ch.size());
