@@ -20,7 +20,7 @@ public class Main {
         Map<String, ArrayList<String>> entities = new HashMap<>();
         Pattern pattern = Pattern.compile("(class|interface) +([A-Za-z]\\w*) *(<\\w+>)? *" +
                 "(extends +([A-Za-z]\\w*))? *(implements +([A-Za-z]\\w*))?", Pattern.MULTILINE);
-        ArrayList<String> data = ReadSourceFiles("../spring-framework-main");
+        ArrayList<String> data = ReadSourceFiles("");
         Parent action = (entity, parent) -> {
             if (parent != null) {
                 entities.put(parent, entities.getOrDefault(parent, new ArrayList<>()));
