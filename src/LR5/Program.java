@@ -25,7 +25,7 @@ public class Program {
         ArrayList<Callable<List<Entity>>> executorTasks = new ArrayList<>();
 
         ArrayList<String> data = new ArrayList<>();
-        try (Stream<Path> paths = Files.walk(Paths.get("src/LR2/data"))) {
+        try (Stream<Path> paths = Files.walk(Paths.get(""))) {
             paths.filter(Files::isRegularFile)
                     .map(Path::toString)
                     .filter(f -> f.endsWith(".java"))
@@ -96,6 +96,7 @@ public class Program {
             childCurrent.addAndGet(value.size());
         });
         System.out.println("Child current: " + childCurrent);
+        System.out.println("Size" + classesInProject.size());
     }
 }
 

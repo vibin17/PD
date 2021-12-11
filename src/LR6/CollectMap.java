@@ -23,7 +23,7 @@ public class CollectMap implements Callable<Map<String, ArrayList<String>>> {
 
         while (count != 4) {
             ArrayList<Entity> tempMap = maps.take();
-            if(tempMap.size() == 0) {
+            if(tempMap.get(0).name == "poison") {
                 count++;
                 continue;
             } else {

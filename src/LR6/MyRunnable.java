@@ -44,9 +44,15 @@ public class MyRunnable implements Runnable {
                    } catch (Exception e) {
                        e.printStackTrace();
                    }
-                maps.put(result);
+             if (result.size() != 0){
+                 maps.put(result);
+             }
             }
-            maps.put(new ArrayList<>());
+            ArrayList<Entity> a = new ArrayList();
+            Entity b = new Entity();
+            b.name = "poison";
+            a.add(b);
+            maps.put(a);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
