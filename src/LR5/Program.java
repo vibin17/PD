@@ -99,7 +99,7 @@ public class Program {
     }
 }
 
-static class Entity {
+public static class Entity {
     public String name = null;
     public String parentClass = null;
     public String interfaces = null;
